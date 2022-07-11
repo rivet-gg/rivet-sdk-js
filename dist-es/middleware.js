@@ -16,6 +16,7 @@ export var nodejs;
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
+                            auth = process.env.RIVET_LOBBY_TOKEN;
                             if (!(typeof token == 'string')) return [3, 1];
                             auth = token;
                             return [3, 4];
@@ -103,6 +104,7 @@ export var browser;
                             auth = res_2;
                             _c.label = 4;
                         case 4:
+                            console.log(req.headers);
                             if (token)
                                 req.headers.Authorization = "Bearer ".concat(auth);
                             if (!req.body) {

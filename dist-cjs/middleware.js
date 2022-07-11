@@ -11,7 +11,7 @@ var nodejs;
         }
         return {
             handle: async (req, opts) => {
-                let auth;
+                let auth = process.env.RIVET_LOBBY_TOKEN;
                 if (typeof token == 'string') {
                     auth = token;
                 }
@@ -72,6 +72,7 @@ var browser;
                     else
                         auth = res;
                 }
+                console.log(req.headers);
                 if (token)
                     req.headers.Authorization = `Bearer ${auth}`;
                 if (!req.body) {

@@ -14,7 +14,8 @@ export namespace nodejs {
 
 		return {
 			handle: async (req: HttpRequest, opts?: HttpHandlerOptions) => {
-				let auth: string;
+				// Default token taken from env
+				let auth: string = process.env.RIVET_LOBBY_TOKEN;
 
 				// Parse bearer token
 				if (typeof token == 'string') {
@@ -95,6 +96,7 @@ export namespace browser {
 				// TODO:
 				// Clear AWS headers
 				// req.headers = {};
+				console.log(req.headers);
 
 				if (token) req.headers.Authorization = `Bearer ${auth}`;
 
