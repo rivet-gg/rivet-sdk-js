@@ -29,7 +29,9 @@ export namespace nodejs {
 
 				// Clear AWS headers
 				req.headers = Object.fromEntries(
-					Object.entries(req.headers).filter(([key]) => !key.startsWith('amz-'))
+					Object.entries(req.headers).filter(
+						([key]) => !key.startsWith('amz-') && !key.startsWith('x-amz-')
+					)
 				);
 
 				if (auth) req.headers.Authorization = `Bearer ${auth}`;

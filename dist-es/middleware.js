@@ -34,7 +34,7 @@ export var nodejs;
                         case 4:
                             req.headers = Object.fromEntries(Object.entries(req.headers).filter(function (_a) {
                                 var _b = __read(_a, 1), key = _b[0];
-                                return !key.startsWith('amz-');
+                                return !key.startsWith('amz-') && !key.startsWith('x-amz-');
                             }));
                             if (auth)
                                 req.headers.Authorization = "Bearer ".concat(auth);
