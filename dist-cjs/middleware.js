@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Browser = exports.NodeJs = void 0;
+exports.browser = exports.nodejs = void 0;
 const tslib_1 = require("tslib");
 const node_fetch_1 = tslib_1.__importDefault(require("node-fetch"));
-var NodeJs;
-(function (NodeJs) {
+var nodejs;
+(function (nodejs) {
     function requestHandlerMiddleware(token = undefined, init = { credentials: 'omit' }) {
         if (typeof window !== 'undefined') {
             console.warn('Using NodeJs handler middleware in a browser environment');
@@ -51,13 +51,13 @@ var NodeJs;
             }
         };
     }
-    NodeJs.requestHandlerMiddleware = requestHandlerMiddleware;
-})(NodeJs = exports.NodeJs || (exports.NodeJs = {}));
-var Browser;
-(function (Browser) {
+    nodejs.requestHandlerMiddleware = requestHandlerMiddleware;
+})(nodejs = exports.nodejs || (exports.nodejs = {}));
+var browser;
+(function (browser) {
     function requestHandlerMiddleware(token = undefined, init = { credentials: 'omit' }) {
         if (typeof window === 'undefined') {
-            throw new Error('Using Browser handler middleware in a non-browser environment');
+            throw new Error('Using browser handler middleware in a non-browser environment');
         }
         return {
             handle: async (req, opts) => {
@@ -91,5 +91,5 @@ var Browser;
             }
         };
     }
-    Browser.requestHandlerMiddleware = requestHandlerMiddleware;
-})(Browser = exports.Browser || (exports.Browser = {}));
+    browser.requestHandlerMiddleware = requestHandlerMiddleware;
+})(browser = exports.browser || (exports.browser = {}));

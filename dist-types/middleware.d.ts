@@ -1,6 +1,6 @@
 import { HttpRequest } from '@aws-sdk/protocol-http';
 import { HttpHandlerOptions, HeaderBag } from '@aws-sdk/types';
-export declare namespace NodeJs {
+export declare namespace nodejs {
     function requestHandlerMiddleware(token?: string | (() => string) | (() => Promise<string>), init?: RequestInit): {
         handle: (req: HttpRequest, opts?: HttpHandlerOptions) => Promise<{
             response: {
@@ -11,7 +11,7 @@ export declare namespace NodeJs {
         }>;
     };
 }
-export declare namespace Browser {
+export declare namespace browser {
     function requestHandlerMiddleware(token?: String, init?: RequestInit): {
         handle: (req: HttpRequest, opts?: HttpHandlerOptions) => Promise<{
             response: {

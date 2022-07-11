@@ -3,7 +3,7 @@ import { HttpHandlerOptions, HeaderBag } from '@aws-sdk/types';
 import { AbortSignal as __AbortSignal } from '@aws-sdk/types';
 import { default as nodeFetch } from 'node-fetch';
 
-export namespace NodeJs {
+export namespace nodejs {
 	export function requestHandlerMiddleware(
 		token: string | (() => string) | (() => Promise<string>) = undefined,
 		init: RequestInit = { credentials: 'omit' }
@@ -69,13 +69,13 @@ export namespace NodeJs {
 	}
 }
 
-export namespace Browser {
+export namespace browser {
 	export function requestHandlerMiddleware(
 		token: String = undefined,
 		init: RequestInit = { credentials: 'omit' }
 	) {
 		if (typeof window === 'undefined') {
-			throw new Error('Using Browser handler middleware in a non-browser environment');
+			throw new Error('Using browser handler middleware in a non-browser environment');
 		}
 
 		return {

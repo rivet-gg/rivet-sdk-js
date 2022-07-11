@@ -1,7 +1,7 @@
 import { __awaiter, __generator, __read } from "tslib";
 import { default as nodeFetch } from 'node-fetch';
-export var NodeJs;
-(function (NodeJs) {
+export var nodejs;
+(function (nodejs) {
     function requestHandlerMiddleware(token, init) {
         var _this = this;
         if (token === void 0) { token = undefined; }
@@ -70,16 +70,16 @@ export var NodeJs;
             }); }
         };
     }
-    NodeJs.requestHandlerMiddleware = requestHandlerMiddleware;
-})(NodeJs || (NodeJs = {}));
-export var Browser;
-(function (Browser) {
+    nodejs.requestHandlerMiddleware = requestHandlerMiddleware;
+})(nodejs || (nodejs = {}));
+export var browser;
+(function (browser) {
     function requestHandlerMiddleware(token, init) {
         var _this = this;
         if (token === void 0) { token = undefined; }
         if (init === void 0) { init = { credentials: 'omit' }; }
         if (typeof window === 'undefined') {
-            throw new Error('Using Browser handler middleware in a non-browser environment');
+            throw new Error('Using browser handler middleware in a non-browser environment');
         }
         return {
             handle: function (req, opts) { return __awaiter(_this, void 0, void 0, function () {
@@ -128,5 +128,5 @@ export var Browser;
             }); }
         };
     }
-    Browser.requestHandlerMiddleware = requestHandlerMiddleware;
-})(Browser || (Browser = {}));
+    browser.requestHandlerMiddleware = requestHandlerMiddleware;
+})(browser || (browser = {}));
