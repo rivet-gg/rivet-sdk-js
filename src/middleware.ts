@@ -71,7 +71,7 @@ export namespace nodejs {
 
 export namespace browser {
 	export function requestHandlerMiddleware(
-		token: String = undefined,
+		token: string | (() => string) | (() => Promise<string>) = undefined,
 		init: RequestInit = { credentials: 'omit' }
 	) {
 		if (typeof window === 'undefined') {
@@ -80,9 +80,23 @@ export namespace browser {
 
 		return {
 			handle: async (req: HttpRequest, opts?: HttpHandlerOptions) => {
-				req.headers = {};
+				let auth: string;
 
-				if (token) req.headers.Authorization = `Bearer ${token}`;
+				// Parse bearer token
+				if (typeof token == 'string') {
+					auth = token;
+				} else if (typeof token == 'function') {
+					let res = token();
+
+					if (res instanceof Promise) auth = await res;
+					else auth = res;
+				}
+
+				// TODO:
+				// Clear AWS headers
+				// req.headers = {};
+
+				if (token) req.headers.Authorization = `Bearer ${auth}`;
 
 				// Default body
 				if (!req.body) {

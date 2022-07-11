@@ -61,9 +61,19 @@ var browser;
         }
         return {
             handle: async (req, opts) => {
-                req.headers = {};
+                let auth;
+                if (typeof token == 'string') {
+                    auth = token;
+                }
+                else if (typeof token == 'function') {
+                    let res = token();
+                    if (res instanceof Promise)
+                        auth = await res;
+                    else
+                        auth = res;
+                }
                 if (token)
-                    req.headers.Authorization = `Bearer ${token}`;
+                    req.headers.Authorization = `Bearer ${auth}`;
                 if (!req.body) {
                     if (req.method == 'GET' || req.method == 'HEAD')
                         req.body = undefined;

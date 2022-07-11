@@ -83,14 +83,28 @@ export var browser;
         }
         return {
             handle: function (req, opts) { return __awaiter(_this, void 0, void 0, function () {
-                var queryParameters, query, uri, res;
+                var auth, res_2, queryParameters, query, uri, res;
                 var _a, _b;
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            req.headers = {};
+                            if (!(typeof token == 'string')) return [3, 1];
+                            auth = token;
+                            return [3, 4];
+                        case 1:
+                            if (!(typeof token == 'function')) return [3, 4];
+                            res_2 = token();
+                            if (!(res_2 instanceof Promise)) return [3, 3];
+                            return [4, res_2];
+                        case 2:
+                            auth = _c.sent();
+                            return [3, 4];
+                        case 3:
+                            auth = res_2;
+                            _c.label = 4;
+                        case 4:
                             if (token)
-                                req.headers.Authorization = "Bearer ".concat(token);
+                                req.headers.Authorization = "Bearer ".concat(auth);
                             if (!req.body) {
                                 if (req.method == 'GET' || req.method == 'HEAD')
                                     req.body = undefined;
@@ -108,14 +122,14 @@ export var browser;
                             return [4, window.fetch(uri, Object.assign(req, init, {
                                     signal: opts.abortSignal
                                 }))];
-                        case 1:
+                        case 5:
                             res = _c.sent();
                             _a = {};
                             _b = {
                                 statusCode: res.status
                             };
                             return [4, res.clone().blob()];
-                        case 2: return [2, (_a.response = (_b.body = _c.sent(),
+                        case 6: return [2, (_a.response = (_b.body = _c.sent(),
                                 _b.headers = Array.from(res.headers.entries()).reduce(function (s, _a) {
                                     var _b = __read(_a, 2), k = _b[0], v = _b[1];
                                     s[k] = v;

@@ -12,7 +12,7 @@ export declare namespace nodejs {
     };
 }
 export declare namespace browser {
-    function requestHandlerMiddleware(token?: String, init?: RequestInit): {
+    function requestHandlerMiddleware(token?: string | (() => string) | (() => Promise<string>), init?: RequestInit): {
         handle: (req: HttpRequest, opts?: HttpHandlerOptions) => Promise<{
             response: {
                 statusCode: number;
