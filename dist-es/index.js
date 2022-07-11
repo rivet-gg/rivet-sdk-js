@@ -1,2 +1,2 @@
 export { RepeatingRequest } from './repeating-request';
-export * as middleware from './utils';
+export * as middleware from './middleware';

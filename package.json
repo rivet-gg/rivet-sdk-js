@@ -1,5 +1,5 @@
 {
-	"name": "rivet-sdk",
+	"name": "@rivet-gg/common",
 	"version": "0.0.1",
 	"scripts": {
 		"prepack": "yarn build",

@@ -8,9 +8,14 @@ interface WatchResponse {
 }
 
 export interface RepeatingRequestOptions {
+	// Stops loop on error
 	cancelOnError?: boolean;
-	noWatchIndex?: boolean; // Blocks without watch handling
-	watchIndex?: WatchResponse; // Initial watch index, usually set by cache
+	// Stops loop when there is no watch index in the response
+	cancelOnNoWatchIndex?: boolean;
+	// How much to wait between requests when there is no watch index
+	noWatchIndexDelay?: number;
+	// Initial watch index, usually set by cache
+	watchIndex?: WatchResponse;
 }
 
 export class RepeatingRequest<T> {
@@ -23,6 +28,8 @@ export class RepeatingRequest<T> {
 	private messageHandlers: ((message: T) => void)[] = [];
 	private errorHandlers: ErrorHandler[] = [];
 
+	private delay: number = 0;
+
 	constructor(
 		cb: (abortSignal: __AbortSignal, watchIndex: string) => Promise<T>,
 		opts?: RepeatingRequestOptions
@@ -32,7 +39,8 @@ export class RepeatingRequest<T> {
 		this.opts = Object.assign(
 			{
 				cancelOnError: true,
-				noWatchIndex: false,
+				cancelOnNoWatchIndex: true,
+				noWatchIndexDelay: 2000,
 				watchIndex: undefined
 			},
 			opts
@@ -48,6 +56,8 @@ export class RepeatingRequest<T> {
 	// Repeat request forever until cancelled
 	private async repeat() {
 		while (this.active) {
+			if (this.delay) await this.wait();
+
 			// Handle any request errors
 			try {
 				// MARK: The abort controller signal is cast to `any` because
@@ -67,6 +77,13 @@ export class RepeatingRequest<T> {
 				this.handleErrors(e);
 			}
 		}
+	}
+
+	// Wait for any delay in the system
+	private async wait() {
+		let delay = this.delay;
+		this.delay = 0;
+		await new Promise(resolve => setTimeout(resolve, delay));
 	}
 
 	onMessage(cb: (message: T) => void) {
@@ -106,9 +123,15 @@ export class RepeatingRequest<T> {
 	}
 
 	private parseWatchResponse(watchResponse: WatchResponse) {
-		if (!this.opts.noWatchIndex) {
-			if (!watchResponse.index) console.error('Blocking request has no watch response');
-			else this.watchIndex = watchResponse.index;
+		if (!watchResponse.index) {
+			if (this.opts.cancelOnNoWatchIndex) {
+				console.error('Blocking request has no watch response');
+				this.cancel();
+			}
+			// Delay the next cycle when the blocking request doesn't have a watch response
+			else this.delay = this.opts.noWatchIndexDelay;
+		} else {
+			this.watchIndex = watchResponse.index;
 		}
 	}
 }

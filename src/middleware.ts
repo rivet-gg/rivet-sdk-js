@@ -1,19 +1,36 @@
 import { HttpRequest } from '@aws-sdk/protocol-http';
 import { HttpHandlerOptions, HeaderBag } from '@aws-sdk/types';
 import { AbortSignal as __AbortSignal } from '@aws-sdk/types';
-import { AbortController as __AbortController } from '@aws-sdk/abort-controller';
 import { default as nodeFetch } from 'node-fetch';
 
 export namespace NodeJs {
 	export function requestHandlerMiddleware(
-		token: String = undefined,
+		token: string | (() => string) | (() => Promise<string>) = undefined,
 		init: RequestInit = { credentials: 'omit' }
 	) {
+		if (typeof window !== 'undefined') {
+			console.warn('Using NodeJs handler middleware in a browser environment');
+		}
+
 		return {
 			handle: async (req: HttpRequest, opts?: HttpHandlerOptions) => {
-				req.headers = {};
+				let auth: string;
 
-				if (token) req.headers.Authorization = `Bearer ${token}`;
+				// Parse bearer token
+				if (typeof token == 'string') {
+					auth = token;
+				} else if (typeof token == 'function') {
+					let res = token();
+
+					if (res instanceof Promise) auth = await res;
+					else auth = res;
+				}
+
+				// TODO:
+				// Clear AWS headers
+				// req.headers = {};
+
+				if (auth) req.headers.Authorization = `Bearer ${auth}`;
 
 				// Default body
 				if (!req.body) {
@@ -57,6 +74,10 @@ export namespace Browser {
 		token: String = undefined,
 		init: RequestInit = { credentials: 'omit' }
 	) {
+		if (typeof window === 'undefined') {
+			throw new Error('Using Browser handler middleware in a non-browser environment');
+		}
+
 		return {
 			handle: async (req: HttpRequest, opts?: HttpHandlerOptions) => {
 				req.headers = {};

@@ -8,10 +8,12 @@ class RepeatingRequest {
         this.abortController = new AbortController();
         this.messageHandlers = [];
         this.errorHandlers = [];
+        this.delay = 0;
         this.cb = cb;
         this.opts = Object.assign({
             cancelOnError: true,
-            noWatchIndex: false,
+            cancelOnNoWatchIndex: true,
+            noWatchIndexDelay: 2000,
             watchIndex: undefined
         }, opts);
         if (this.opts.watchIndex !== undefined && this.opts.watchIndex !== null)
@@ -21,6 +23,8 @@ class RepeatingRequest {
     async repeat() {
         var _a;
         while (this.active) {
+            if (this.delay)
+                await this.wait();
             try {
                 let res = await this.cb(this.abortController.signal, (_a = this.watchIndex) !== null && _a !== void 0 ? _a : undefined);
                 this.handleMessage(res);
@@ -34,6 +38,11 @@ class RepeatingRequest {
                 this.handleErrors(e);
             }
         }
+    }
+    async wait() {
+        let delay = this.delay;
+        this.delay = 0;
+        await new Promise(resolve => setTimeout(resolve, delay));
     }
     onMessage(cb) {
         this.messageHandlers.push(cb);
@@ -66,11 +75,16 @@ class RepeatingRequest {
             console.error('Unhandled repeating request error', e);
     }
     parseWatchResponse(watchResponse) {
-        if (!this.opts.noWatchIndex) {
-            if (!watchResponse.index)
+        if (!watchResponse.index) {
+            if (this.opts.cancelOnNoWatchIndex) {
                 console.error('Blocking request has no watch response');
+                this.cancel();
+            }
             else
-                this.watchIndex = watchResponse.index;
+                this.delay = this.opts.noWatchIndexDelay;
+        }
+        else {
+            this.watchIndex = watchResponse.index;
         }
     }
 }

@@ -5,7 +5,8 @@ interface WatchResponse {
 }
 export interface RepeatingRequestOptions {
     cancelOnError?: boolean;
-    noWatchIndex?: boolean;
+    cancelOnNoWatchIndex?: boolean;
+    noWatchIndexDelay?: number;
     watchIndex?: WatchResponse;
 }
 export declare class RepeatingRequest<T> {
@@ -16,8 +17,10 @@ export declare class RepeatingRequest<T> {
     private abortController;
     private messageHandlers;
     private errorHandlers;
+    private delay;
     constructor(cb: (abortSignal: __AbortSignal, watchIndex: string) => Promise<T>, opts?: RepeatingRequestOptions);
     private repeat;
+    private wait;
     onMessage(cb: (message: T) => void): void;
     onError(cb: ErrorHandler): void;
     cancel(): void;
