@@ -4,7 +4,6 @@
 		"downlevelIteration": true,
 		"esModuleInterop": true,
 		"incremental": true,
-		"lib": ["es2015", "dom", "dom.iterable"],
 		"moduleResolution": "node",
 		"noFallthroughCasesInSwitch": true,
 		"preserveConstEnums": true,

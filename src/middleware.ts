@@ -27,9 +27,10 @@ export namespace nodejs {
 					else auth = res;
 				}
 
-				// TODO:
 				// Clear AWS headers
-				// req.headers = {};
+				req.headers = Object.fromEntries(
+					Object.entries(req.headers).filter(([key]) => !key.startsWith('amz-'))
+				);
 
 				if (auth) req.headers.Authorization = `Bearer ${auth}`;
 
@@ -93,10 +94,10 @@ export namespace browser {
 					else auth = res;
 				}
 
-				// TODO:
 				// Clear AWS headers
-				// req.headers = {};
-				console.log(req.headers);
+				req.headers = Object.fromEntries(
+					Object.entries(req.headers).filter(([key]) => !key.startsWith('amz-'))
+				);
 
 				if (token) req.headers.Authorization = `Bearer ${auth}`;
 

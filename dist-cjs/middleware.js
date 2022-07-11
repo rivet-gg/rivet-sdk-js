@@ -22,6 +22,7 @@ var nodejs;
                     else
                         auth = res;
                 }
+                req.headers = Object.fromEntries(Object.entries(req.headers).filter(([key]) => !key.startsWith('amz-')));
                 if (auth)
                     req.headers.Authorization = `Bearer ${auth}`;
                 if (!req.body) {
@@ -72,7 +73,7 @@ var browser;
                     else
                         auth = res;
                 }
-                console.log(req.headers);
+                req.headers = Object.fromEntries(Object.entries(req.headers).filter(([key]) => !key.startsWith('amz-')));
                 if (token)
                     req.headers.Authorization = `Bearer ${auth}`;
                 if (!req.body) {
