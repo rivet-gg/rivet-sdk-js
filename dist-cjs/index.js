@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.middleware = exports.RepeatingRequest = void 0;
+exports.middleware = void 0;
 const tslib_1 = require("tslib");
-var repeating_request_1 = require("./repeating-request");
-Object.defineProperty(exports, "RepeatingRequest", { enumerable: true, get: function () { return repeating_request_1.RepeatingRequest; } });
+tslib_1.__exportStar(require("./repeating-request"), exports);
 exports.middleware = tslib_1.__importStar(require("./middleware"));
