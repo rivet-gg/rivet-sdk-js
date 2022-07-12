@@ -27,11 +27,11 @@ export namespace browser {
 				}
 
 				// Clear AWS headers
-				console.warn('a', req.headers, req);
 				req.headers = Object.fromEntries(
-					Object.entries(req.headers).filter(([key]) => !key.startsWith('amz-'))
+					Object.entries(req.headers).filter(
+						([key]) => !key.startsWith('amz-') && !key.startsWith('x-amz-')
+					)
 				);
-				console.warn('b', req.headers);
 
 				if (token) req.headers.Authorization = `Bearer ${auth}`;
 

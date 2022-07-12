@@ -22,9 +22,7 @@ var browser;
                     else
                         auth = res;
                 }
-                console.warn('a', req.headers, req);
-                req.headers = Object.fromEntries(Object.entries(req.headers).filter(([key]) => !key.startsWith('amz-')));
-                console.warn('b', req.headers);
+                req.headers = Object.fromEntries(Object.entries(req.headers).filter(([key]) => !key.startsWith('amz-') && !key.startsWith('x-amz-')));
                 if (token)
                     req.headers.Authorization = `Bearer ${auth}`;
                 if (!req.body) {
