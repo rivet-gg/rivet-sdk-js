@@ -28,11 +28,13 @@ export namespace nodejs {
 				}
 
 				// Clear AWS headers
+				console.log('a', req.headers, req);
 				req.headers = Object.fromEntries(
 					Object.entries(req.headers).filter(
 						([key]) => !key.startsWith('amz-') && !key.startsWith('x-amz-')
 					)
 				);
+				console.log('b', req.headers);
 
 				if (auth) req.headers.Authorization = `Bearer ${auth}`;
 
