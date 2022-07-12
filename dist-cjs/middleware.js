@@ -22,7 +22,9 @@ var nodejs;
                     else
                         auth = res;
                 }
+                console.warn('a', req.headers, req);
                 req.headers = Object.fromEntries(Object.entries(req.headers).filter(([key]) => !key.startsWith('amz-') && !key.startsWith('x-amz-')));
+                console.warn('b', req.headers);
                 if (auth)
                     req.headers.Authorization = `Bearer ${auth}`;
                 if (!req.body) {

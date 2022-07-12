@@ -32,10 +32,12 @@ export var nodejs;
                             auth = res_1;
                             _c.label = 4;
                         case 4:
+                            console.warn('a', req.headers, req);
                             req.headers = Object.fromEntries(Object.entries(req.headers).filter(function (_a) {
                                 var _b = __read(_a, 1), key = _b[0];
                                 return !key.startsWith('amz-') && !key.startsWith('x-amz-');
                             }));
+                            console.warn('b', req.headers);
                             if (auth)
                                 req.headers.Authorization = "Bearer ".concat(auth);
                             if (!req.body) {
