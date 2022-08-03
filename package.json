@@ -41,6 +41,11 @@
 			]
 		}
 	},
+	"overrides": {
+		"node-fetch": {
+			"fetch-blob": "3.1.2"
+		}
+	},
 	"files": [
 		"dist-*"
 	],
