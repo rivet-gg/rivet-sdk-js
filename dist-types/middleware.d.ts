@@ -16,7 +16,7 @@ export declare namespace nodejs {
         handle: (req: HttpRequest, opts?: HttpHandlerOptions) => Promise<{
             response: {
                 statusCode: number;
-                body: import("node-fetch").Blob;
+                body: Blob;
                 headers: HeaderBag;
             };
         }>;
