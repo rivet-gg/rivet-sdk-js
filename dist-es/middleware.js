@@ -75,6 +75,50 @@ export var browser;
         };
     }
     browser.requestHandlerMiddleware = requestHandlerMiddleware;
+    function authenticationRefreshMiddleware(requestHandlerMiddleware, fetchToken) {
+        var _this = this;
+        var handle = isHttpHandlerHandle(requestHandlerMiddleware)
+            ? requestHandlerMiddleware.handle
+            : requestHandlerMiddleware;
+        return {
+            handle: function (req, handlerOpts) { return __awaiter(_this, void 0, void 0, function () {
+                var res, body, _a, _b, err_1;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            _c.trys.push([0, 6, , 7]);
+                            return [4, handle(req, handlerOpts)];
+                        case 1:
+                            res = _c.sent();
+                            if (!(res.response.statusCode != 200)) return [3, 5];
+                            _b = (_a = JSON).parse;
+                            return [4, res.response.body.text()];
+                        case 2:
+                            body = _b.apply(_a, [_c.sent()]);
+                            if (!(body.hasOwnProperty('code') && body.code == 'CLAIMS_ENTITLEMENT_EXPIRED')) return [3, 5];
+                            console.debug('Auth expired, refreshing token');
+                            return [4, fetchToken(true)];
+                        case 3:
+                            _c.sent();
+                            return [4, handle(req, handlerOpts)];
+                        case 4:
+                            res = _c.sent();
+                            _c.label = 5;
+                        case 5: return [3, 7];
+                        case 6:
+                            err_1 = _c.sent();
+                            console.debug('Error in authentication refresh middleware', err_1);
+                            return [3, 7];
+                        case 7: return [2, res];
+                    }
+                });
+            }); }
+        };
+    }
+    browser.authenticationRefreshMiddleware = authenticationRefreshMiddleware;
+    function isHttpHandlerHandle(item) {
+        return item.hasOwnProperty('handle');
+    }
 })(browser || (browser = {}));
 export var nodejs;
 (function (nodejs) {
@@ -152,4 +196,5 @@ export var nodejs;
         };
     }
     nodejs.requestHandlerMiddleware = requestHandlerMiddleware;
+    nodejs.authenticationRefreshMiddleware = browser.authenticationRefreshMiddleware;
 })(nodejs || (nodejs = {}));

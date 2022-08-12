@@ -1,3 +1,5 @@
+// TODO: Docs
+
 import { HttpRequest, HttpHandler } from '@aws-sdk/protocol-http';
 import { HttpHandlerOptions, HeaderBag } from '@aws-sdk/types';
 import { AbortSignal as __AbortSignal } from '@aws-sdk/types';
@@ -92,6 +94,7 @@ export namespace browser {
 						if (body.hasOwnProperty('code') && body.code == 'CLAIMS_ENTITLEMENT_EXPIRED') {
 							console.debug('Auth expired, refreshing token');
 
+							// Force refreshes authentication
 							await fetchToken(true);
 
 							// Retry request after refreshing auth
