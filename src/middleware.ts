@@ -72,47 +72,6 @@ export namespace browser {
 			}
 		};
 	}
-
-	export function authenticationRefreshMiddleware(
-		requestHandlerMiddleware: HttpHandler | HttpHandler['handle'],
-		fetchToken: (forceRefresh: boolean) => Promise<string>
-	) {
-		let handle: HttpHandler['handle'] = isHttpHandlerHandle(requestHandlerMiddleware)
-			? requestHandlerMiddleware.handle
-			: requestHandlerMiddleware;
-
-		return {
-			handle: async (req: HttpRequest, handlerOpts?: HttpHandlerOptions) => {
-				let res: Awaited<ReturnType<HttpHandler['handle']>>;
-
-				try {
-					res = await handle(req, handlerOpts);
-
-					if (res.response.statusCode != 200) {
-						let body = JSON.parse(await res.response.body.text());
-
-						if (body.hasOwnProperty('code') && body.code == 'CLAIMS_ENTITLEMENT_EXPIRED') {
-							console.debug('Auth expired, refreshing token');
-
-							// Force refreshes authentication
-							await fetchToken(true);
-
-							// Retry request after refreshing auth
-							res = await handle(req, handlerOpts);
-						}
-					}
-				} catch (err) {
-					console.debug('Error in authentication refresh middleware', err);
-				}
-
-				return res;
-			}
-		};
-	}
-
-	function isHttpHandlerHandle(item: HttpHandler | HttpHandler['handle']): item is HttpHandler {
-		return item.hasOwnProperty('handle');
-	}
 }
 
 export namespace nodejs {
@@ -183,7 +142,4 @@ export namespace nodejs {
 			}
 		};
 	}
-
-	// Reexport
-	export const authenticationRefreshMiddleware = browser.authenticationRefreshMiddleware;
 }
