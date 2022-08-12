@@ -1,4 +1,4 @@
-import { HttpRequest } from '@aws-sdk/protocol-http';
+import { HttpRequest, HttpHandler } from '@aws-sdk/protocol-http';
 import { HttpHandlerOptions, HeaderBag } from '@aws-sdk/types';
 import { AbortSignal as __AbortSignal } from '@aws-sdk/types';
 import { default as nodeFetch } from 'node-fetch';
@@ -7,7 +7,7 @@ export namespace browser {
 	export function requestHandlerMiddleware(
 		token: string | (() => string) | (() => Promise<string>) = undefined,
 		init: RequestInit = { credentials: 'omit' }
-	) {
+	): HttpHandler {
 		if (typeof window === 'undefined') {
 			throw new Error('Using browser handler middleware in a non-browser environment');
 		}
@@ -69,6 +69,46 @@ export namespace browser {
 				};
 			}
 		};
+	}
+
+	export function authenticationRefreshMiddleware(
+		requestHandlerMiddleware: HttpHandler | HttpHandler['handle'],
+		fetchToken: (forceRefresh: boolean) => Promise<string>
+	) {
+		let handle: HttpHandler['handle'] = isHttpHandlerHandle(requestHandlerMiddleware)
+			? requestHandlerMiddleware.handle
+			: requestHandlerMiddleware;
+
+		return {
+			handle: async (req: HttpRequest, handlerOpts?: HttpHandlerOptions) => {
+				let res: Awaited<ReturnType<HttpHandler['handle']>>;
+
+				try {
+					res = await handle(req, handlerOpts);
+
+					if (res.response.statusCode != 200) {
+						let body = JSON.parse(await res.response.body.text());
+
+						if (body.hasOwnProperty('code') && body.code == 'CLAIMS_ENTITLEMENT_EXPIRED') {
+							console.debug('Auth expired, refreshing token');
+
+							await fetchToken(true);
+
+							// Retry request after refreshing auth
+							res = await handle(req, handlerOpts);
+						}
+					}
+				} catch (err) {
+					console.debug('Error in authentication refresh middleware', err);
+				}
+
+				return res;
+			}
+		};
+	}
+
+	function isHttpHandlerHandle(item: HttpHandler | HttpHandler['handle']): item is HttpHandler {
+		return item.hasOwnProperty('handle');
 	}
 }
 
@@ -140,4 +180,7 @@ export namespace nodejs {
 			}
 		};
 	}
+
+	// Reexport
+	export const authenticationRefreshMiddleware = browser.authenticationRefreshMiddleware;
 }
