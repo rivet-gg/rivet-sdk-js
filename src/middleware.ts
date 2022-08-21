@@ -132,7 +132,8 @@ export namespace nodejs {
 				return {
 					response: {
 						statusCode: res.status,
-						body: await res.clone().blob(),
+						// Needs a Readable stream. node-fetch already provides a Readable stream by default.
+						body: await res.body,
 						headers: Array.from(res.headers.entries()).reduce((s, [k, v]) => {
 							s[k] = v;
 							return s;
