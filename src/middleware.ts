@@ -86,7 +86,7 @@ export namespace nodejs {
 		return {
 			handle: async (req: HttpRequest, opts?: HttpHandlerOptions) => {
 				// Default token taken from env
-				let auth: string = process.env.RIVET_LOBBY_TOKEN;
+				let auth: string = process.env.RIVET_TOKEN ?? process.env.RIVET_LOBBY_TOKEN;
 
 				// Parse bearer token
 				if (typeof token == 'string') {
