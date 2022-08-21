@@ -75,50 +75,6 @@ export var browser;
         };
     }
     browser.requestHandlerMiddleware = requestHandlerMiddleware;
-    function authenticationRefreshMiddleware(requestHandlerMiddleware, fetchToken) {
-        var _this = this;
-        var handle = isHttpHandlerHandle(requestHandlerMiddleware)
-            ? requestHandlerMiddleware.handle
-            : requestHandlerMiddleware;
-        return {
-            handle: function (req, handlerOpts) { return __awaiter(_this, void 0, void 0, function () {
-                var res, body, _a, _b, err_1;
-                return __generator(this, function (_c) {
-                    switch (_c.label) {
-                        case 0:
-                            _c.trys.push([0, 6, , 7]);
-                            return [4, handle(req, handlerOpts)];
-                        case 1:
-                            res = _c.sent();
-                            if (!(res.response.statusCode != 200)) return [3, 5];
-                            _b = (_a = JSON).parse;
-                            return [4, res.response.body.text()];
-                        case 2:
-                            body = _b.apply(_a, [_c.sent()]);
-                            if (!(body.hasOwnProperty('code') && body.code == 'CLAIMS_ENTITLEMENT_EXPIRED')) return [3, 5];
-                            console.debug('Auth expired, refreshing token');
-                            return [4, fetchToken(true)];
-                        case 3:
-                            _c.sent();
-                            return [4, handle(req, handlerOpts)];
-                        case 4:
-                            res = _c.sent();
-                            _c.label = 5;
-                        case 5: return [3, 7];
-                        case 6:
-                            err_1 = _c.sent();
-                            console.debug('Error in authentication refresh middleware', err_1);
-                            return [3, 7];
-                        case 7: return [2, res];
-                    }
-                });
-            }); }
-        };
-    }
-    browser.authenticationRefreshMiddleware = authenticationRefreshMiddleware;
-    function isHttpHandlerHandle(item) {
-        return item.hasOwnProperty('handle');
-    }
 })(browser || (browser = {}));
 export var nodejs;
 (function (nodejs) {
@@ -133,10 +89,11 @@ export var nodejs;
             handle: function (req, opts) { return __awaiter(_this, void 0, void 0, function () {
                 var auth, res_2, queryParameters, query, uri, res;
                 var _a, _b;
-                return __generator(this, function (_c) {
-                    switch (_c.label) {
+                var _c;
+                return __generator(this, function (_d) {
+                    switch (_d.label) {
                         case 0:
-                            auth = process.env.RIVET_LOBBY_TOKEN;
+                            auth = (_c = process.env.RIVET_TOKEN) !== null && _c !== void 0 ? _c : process.env.RIVET_LOBBY_TOKEN;
                             if (!(typeof token == 'string')) return [3, 1];
                             auth = token;
                             return [3, 4];
@@ -146,11 +103,11 @@ export var nodejs;
                             if (!(res_2 instanceof Promise)) return [3, 3];
                             return [4, res_2];
                         case 2:
-                            auth = _c.sent();
+                            auth = _d.sent();
                             return [3, 4];
                         case 3:
                             auth = res_2;
-                            _c.label = 4;
+                            _d.label = 4;
                         case 4:
                             req.headers = Object.fromEntries(Object.entries(req.headers).filter(function (_a) {
                                 var _b = __read(_a, 1), key = _b[0];
@@ -176,13 +133,13 @@ export var nodejs;
                                     signal: opts.abortSignal
                                 }))];
                         case 5:
-                            res = _c.sent();
+                            res = _d.sent();
                             _a = {};
                             _b = {
                                 statusCode: res.status
                             };
-                            return [4, res.clone().blob()];
-                        case 6: return [2, (_a.response = (_b.body = _c.sent(),
+                            return [4, res.body];
+                        case 6: return [2, (_a.response = (_b.body = _d.sent(),
                                 _b.headers = Array.from(res.headers.entries()).reduce(function (s, _a) {
                                     var _b = __read(_a, 2), k = _b[0], v = _b[1];
                                     s[k] = v;
@@ -196,5 +153,4 @@ export var nodejs;
         };
     }
     nodejs.requestHandlerMiddleware = requestHandlerMiddleware;
-    nodejs.authenticationRefreshMiddleware = browser.authenticationRefreshMiddleware;
 })(nodejs || (nodejs = {}));

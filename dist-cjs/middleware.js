@@ -53,35 +53,6 @@ var browser;
         };
     }
     browser.requestHandlerMiddleware = requestHandlerMiddleware;
-    function authenticationRefreshMiddleware(requestHandlerMiddleware, fetchToken) {
-        let handle = isHttpHandlerHandle(requestHandlerMiddleware)
-            ? requestHandlerMiddleware.handle
-            : requestHandlerMiddleware;
-        return {
-            handle: async (req, handlerOpts) => {
-                let res;
-                try {
-                    res = await handle(req, handlerOpts);
-                    if (res.response.statusCode != 200) {
-                        let body = JSON.parse(await res.response.body.text());
-                        if (body.hasOwnProperty('code') && body.code == 'CLAIMS_ENTITLEMENT_EXPIRED') {
-                            console.debug('Auth expired, refreshing token');
-                            await fetchToken(true);
-                            res = await handle(req, handlerOpts);
-                        }
-                    }
-                }
-                catch (err) {
-                    console.debug('Error in authentication refresh middleware', err);
-                }
-                return res;
-            }
-        };
-    }
-    browser.authenticationRefreshMiddleware = authenticationRefreshMiddleware;
-    function isHttpHandlerHandle(item) {
-        return item.hasOwnProperty('handle');
-    }
 })(browser = exports.browser || (exports.browser = {}));
 var nodejs;
 (function (nodejs) {
@@ -91,7 +62,8 @@ var nodejs;
         }
         return {
             handle: async (req, opts) => {
-                let auth = process.env.RIVET_LOBBY_TOKEN;
+                var _a;
+                let auth = (_a = process.env.RIVET_TOKEN) !== null && _a !== void 0 ? _a : process.env.RIVET_LOBBY_TOKEN;
                 if (typeof token == 'string') {
                     auth = token;
                 }
@@ -122,7 +94,7 @@ var nodejs;
                 return {
                     response: {
                         statusCode: res.status,
-                        body: await res.clone().blob(),
+                        body: await res.body,
                         headers: Array.from(res.headers.entries()).reduce((s, [k, v]) => {
                             s[k] = v;
                             return s;
@@ -133,5 +105,4 @@ var nodejs;
         };
     }
     nodejs.requestHandlerMiddleware = requestHandlerMiddleware;
-    nodejs.authenticationRefreshMiddleware = browser.authenticationRefreshMiddleware;
 })(nodejs = exports.nodejs || (exports.nodejs = {}));
