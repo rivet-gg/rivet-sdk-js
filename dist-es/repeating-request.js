@@ -100,7 +100,7 @@ var RepeatingRequest = (function () {
             console.error('Unhandled repeating request error', e);
     };
     RepeatingRequest.prototype.parseWatchResponse = function (watchResponse) {
-        if (!watchResponse.index) {
+        if (!(watchResponse === null || watchResponse === void 0 ? void 0 : watchResponse.index)) {
             if (this.opts.cancelOnNoWatchIndex) {
                 console.error('Blocking request has no watch response');
                 this.cancel();

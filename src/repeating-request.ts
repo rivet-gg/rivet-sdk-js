@@ -123,7 +123,7 @@ export class RepeatingRequest<T> {
 	}
 
 	private parseWatchResponse(watchResponse: WatchResponse) {
-		if (!watchResponse.index) {
+		if (!watchResponse?.index) {
 			if (this.opts.cancelOnNoWatchIndex) {
 				console.error('Blocking request has no watch response');
 				this.cancel();
