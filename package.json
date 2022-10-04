@@ -17,9 +17,9 @@
 		"./dist-cjs/middleware.js": "./dist-cjs/middleware.browser.js",
 		"./dist-types/middleware.js": "./dist-types/middleware.browser.js"
 	},
-	"main": "./dist-cjs/node/index.js",
-	"module": "./dist-es/node/index.js",
-	"types": "./dist-types/node/index.d.ts",
+	"main": "./dist-cjs/index.js",
+	"module": "./dist-es/index.js",
+	"types": "./dist-types/index.d.ts",
 	"author": {
 		"name": "Rivet SDK for JavaScript",
 		"url": "https://docs.rivet.gg/"
