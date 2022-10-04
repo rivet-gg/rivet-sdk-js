@@ -1,6 +1,6 @@
 {
 	"name": "@rivet-gg/common",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"scripts": {
 		"prepack": "yarn build",
 		"build": "concurrently 'yarn:build:cjs' 'yarn:build:es' 'yarn:build:types'",
@@ -11,9 +11,15 @@
 		"clean": "rimraf ./dist-* && rimraf *.tsbuildinfo",
 		"test": "exit 0"
 	},
-	"main": "./dist-cjs/index.js",
-	"module": "./dist-es/index.js",
-	"types": "./dist-types/index.d.ts",
+	"browser": {
+		"node-fetch": false,
+		"./dist-es/middleware.js": "./dist-es/middleware.browser.js",
+		"./dist-cjs/middleware.js": "./dist-cjs/middleware.browser.js",
+		"./dist-types/middleware.js": "./dist-types/middleware.browser.js"
+	},
+	"main": "./dist-cjs/node/index.js",
+	"module": "./dist-es/node/index.js",
+	"types": "./dist-types/node/index.d.ts",
 	"author": {
 		"name": "Rivet SDK for JavaScript",
 		"url": "https://docs.rivet.gg/"
