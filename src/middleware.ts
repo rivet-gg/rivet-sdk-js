@@ -8,7 +8,7 @@ import { default as nodeFetch } from 'node-fetch';
 export function requestHandlerMiddleware(
 	token: string | (() => string) | (() => Promise<string>) = undefined,
 	init: RequestInit = { credentials: 'omit' }
-) {
+): HttpHandler {
 	if (typeof window !== 'undefined') {
 		console.warn('Using NodeJs handler middleware in a browser environment');
 	}
