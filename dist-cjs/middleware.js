@@ -9,8 +9,7 @@ function requestHandlerMiddleware(token = undefined, init = { credentials: 'omit
     }
     return {
         handle: async (req, opts) => {
-            var _a;
-            let auth = (_a = process.env.RIVET_TOKEN) !== null && _a !== void 0 ? _a : process.env.RIVET_LOBBY_TOKEN;
+            let auth;
             if (typeof token == 'string') {
                 auth = token;
             }
