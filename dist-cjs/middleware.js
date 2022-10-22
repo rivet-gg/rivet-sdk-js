@@ -31,7 +31,14 @@ function requestHandlerMiddleware(token = undefined, init = { credentials: 'omit
             }
             let queryParameters = req.query ? Object.entries(req.query) : [];
             let query = queryParameters
-                .map(([k, v]) => `${k}=${encodeURIComponent(v instanceof Array ? v.join(',') : v)}`)
+                .flatMap(([k, v]) => {
+                if (v instanceof Array) {
+                    return v.map(vi => `${k}=${encodeURIComponent(vi)}`);
+                }
+                else {
+                    return [`${k}=${encodeURIComponent(v)}`];
+                }
+            })
                 .join('&');
             let uri = `${req.protocol}//${req.hostname}${req.port ? `:${req.port}` : ''}${req.path}${query ? `?${query}` : ''}`;
             let res = await (0, node_fetch_1.default)(uri, Object.assign(req, init, {

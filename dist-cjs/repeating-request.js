@@ -14,11 +14,13 @@ class RepeatingRequest {
             cancelOnError: true,
             cancelOnNoWatchIndex: true,
             noWatchIndexDelay: 2000,
-            watchIndex: undefined
+            watchIndex: undefined,
+            pauseOnCreation: false
         }, opts);
         if (this.opts.watchIndex !== undefined && this.opts.watchIndex !== null)
             this.parseWatchResponse(this.opts.watchIndex);
-        this.repeat();
+        if (!this.opts.pauseOnCreation)
+            this.repeat();
     }
     async repeat() {
         var _a;

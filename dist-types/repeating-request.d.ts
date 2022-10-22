@@ -8,6 +8,7 @@ export interface RepeatingRequestOptions {
     cancelOnNoWatchIndex?: boolean;
     noWatchIndexDelay?: number;
     watchIndex?: WatchResponse;
+    pauseOnCreation?: boolean;
 }
 export declare class RepeatingRequest<T> {
     private cb;

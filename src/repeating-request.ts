@@ -16,6 +16,8 @@ export interface RepeatingRequestOptions {
 	noWatchIndexDelay?: number;
 	// Initial watch index, usually set by cache
 	watchIndex?: WatchResponse;
+	// Don't start the created `RepeatingRequest` instance upon construction
+	pauseOnCreation?: boolean;
 }
 
 export class RepeatingRequest<T> {
@@ -41,8 +43,9 @@ export class RepeatingRequest<T> {
 				cancelOnError: true,
 				cancelOnNoWatchIndex: true,
 				noWatchIndexDelay: 2000,
-				watchIndex: undefined
-			},
+				watchIndex: undefined,
+				pauseOnCreation: false
+			} as RepeatingRequestOptions,
 			opts
 		);
 
@@ -50,7 +53,7 @@ export class RepeatingRequest<T> {
 		if (this.opts.watchIndex !== undefined && this.opts.watchIndex !== null)
 			this.parseWatchResponse(this.opts.watchIndex);
 
-		this.repeat();
+		if (!this.opts.pauseOnCreation) this.repeat();
 	}
 
 	// Repeat request forever until cancelled
