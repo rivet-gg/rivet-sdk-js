@@ -43,7 +43,16 @@ export function requestHandlerMiddleware(
 
 			let queryParameters = req.query ? Object.entries(req.query) : [];
 			let query = queryParameters
-				.map(([k, v]) => `${k}=${encodeURIComponent(v instanceof Array ? v.join(',') : v)}`)
+				.flatMap(([k, v]) => {
+					// List: ?list=1&list=2&list=3
+					if (v instanceof Array) {
+						return v.map(vi => `${k}=${encodeURIComponent(vi)}`);
+					}
+					// Single item: ?item1=1&item2=2
+					else {
+						return [`${k}=${encodeURIComponent(v)}`];
+					}
+				})
 				.join('&');
 			let uri = `${req.protocol}//${req.hostname}${req.port ? `:${req.port}` : ''}${req.path}${
 				query ? `?${query}` : ''
