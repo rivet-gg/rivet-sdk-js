@@ -42,9 +42,14 @@ export function requestHandlerMiddleware(token, init) {
                         }
                         queryParameters = req.query ? Object.entries(req.query) : [];
                         query = queryParameters
-                            .map(function (_a) {
+                            .flatMap(function (_a) {
                             var _b = __read(_a, 2), k = _b[0], v = _b[1];
-                            return "".concat(k, "=").concat(encodeURIComponent(v instanceof Array ? v.join(',') : v));
+                            if (v instanceof Array) {
+                                return v.map(function (vi) { return "".concat(k, "=").concat(encodeURIComponent(vi)); });
+                            }
+                            else {
+                                return ["".concat(k, "=").concat(encodeURIComponent(v))];
+                            }
                         })
                             .join('&');
                         uri = "".concat(req.protocol, "//").concat(req.hostname).concat(req.port ? ":".concat(req.port) : '').concat(req.path).concat(query ? "?".concat(query) : '');
